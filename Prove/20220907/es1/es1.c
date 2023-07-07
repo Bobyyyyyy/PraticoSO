@@ -7,7 +7,7 @@
 #include <wait.h>
 #include <time.h>
 int main(int argv, char* argc[]) {
-        char* argList[argv];
+    char* argList[argv];
 	clock_t start,end;
 	argList[0] = argc[1];
         int i = 1;
