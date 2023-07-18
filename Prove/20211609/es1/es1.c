@@ -45,6 +45,10 @@ int main(int argc, char* argv[]) {
 	char name[PATH_MAX];
 	
 	strcat(filepath,buff[0].name);
+
+
+
+
 	/* Non so perchè non mi considera la directory in cui è il file quindi la remove non va */
 	remove(filepath);
 	execvp(cmd,args);
