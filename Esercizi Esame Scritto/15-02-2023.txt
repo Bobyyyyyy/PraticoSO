@@ -1,0 +1,54 @@
+// esericizio c.1
+monitor redblack
+#define red 0
+#define black 1
+int sommaRossi;
+int sommaNeri;
+int numeroNeri;
+int numeroRossi;
+int lastcolor = 2;
+condition okToGo /* lastcolor != color */
+
+ void aggiornaSomma(int color, value) {
+    if (color == 0) {
+        sommaRossi += value;
+        numeroRossi ++;
+    }
+
+    else {
+        sommaNeri += value;
+        numeroNeri ++;
+    }
+}
+
+double getMedia(int color) { 
+    i( color == 0 ) {
+        return sommaRossi/numeroRossi;
+    }
+    else {
+        return sommaNeri/numeroNeri;
+    }
+}
+
+
+
+procedure entry double rb(int color, double value) {
+    if (lastcolor == color) {
+        okToGo.wait();
+    }
+    aggiornaSomma(color,value);
+    lastcolor = color;
+    okToGo.signal();
+    return getMedia(color);
+}
+
+
+
+// esercizio c.2
+
+
+
+
+
+
+ 

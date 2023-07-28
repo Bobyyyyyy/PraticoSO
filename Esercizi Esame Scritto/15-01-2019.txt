@@ -1,0 +1,80 @@
+Esercizio c.1
+Invariante : P(w) <= V(w) + init;
+P(w) - V(w) + init >= 0 
+
+monitor wsem {
+int ALLP;
+int ALLV;
+int value = init;
+Queue<Semaphore binSem, int value> queueOfBinSem;
+
+
+
+
+procedure entry void P(w) {
+    if (value - w < 0) {
+        condition s;
+        newProc = Queue<condition s, w>;
+        queueOfBinSem.enqueue(newProc);
+        newProc.wait();
+    }
+
+    value -= w
+}
+
+procedure entry void V(w) {
+    if(isEmpty(queueOfBinSem)) {
+        Proc = queueOfBinSem.getHead();
+        if(value + w - Proc.value > 0) {
+            value += w;
+        }
+    }
+
+    else {
+        value += w;
+    }
+
+
+}
+
+
+}
+
+
+
+Esercizio c.2
+
+ms_send (pid dest, msg_t msg) {
+    asend(<getpid(),msg> dest);
+    arecv(ACK,dest);
+}
+
+
+
+ms_recv(int n, pid senders, msg_t msgs) {
+
+    while (true) {
+        pid, msg = arecv(ANY);
+        
+        for sender in senders
+            if (pid == sender) {
+                msgs.add(msg);
+                n--;
+            }
+    
+        if(n == 0) {
+            for sender in senders
+                asend(ACK,sender);
+        }
+    }
+}
+
+Un caso di deadlock potrebbe essere quando n > senders, questo perche' parliamo di message passing asincrono, un sender puo' mandare un messaggio alla volta, in quel caso c'e' deadlock.
+
+
+In un sistema non interattivo (batch) RR differisce da FIFO quando il proc supera il quanto di tempo concessogli e viene sospeso (se il sistema è preemptive)
+con RR le prestazioni migliorano perché in questo tipo si sistemi si vuole minimizzare il tempo medio di completamento e attesa.
+
+
+
+

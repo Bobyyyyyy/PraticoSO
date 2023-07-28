@@ -1,0 +1,103 @@
+Esercizio C.1
+
+
+
+monitor semdata:
+int valore = 0;
+List dati = new List <datatype data>;
+condition sem;
+
+
+procedure entry datatype dp(void) {
+    if (valore == 0) {
+        sem.wait();
+    }
+    valore--;
+    return dati.pop();
+}
+
+
+procedure entry void dV(datatype data) {
+    valore++;
+    dati.push(data);
+    sem.signal();
+} 
+
+
+
+
+Esercizio c.2
+
+void snsed (msgtype msg, pid_t dest) {
+    asend((getpid(),msg),dest);
+    arecv(dest);
+}
+
+
+
+Queue<pid_t sender, List<msgtype> queue
+List<msgtype> unkey;
+
+
+msgtype getMessage(List<msgtype> list, int n) {
+    if (n == 0 && list.len() > 0) {
+        return list.get(list.len()-1);
+    } 
+    elif ( list.len() >= n ) {
+        return list.get(n-1);
+    }
+    else {
+        return null;
+    }
+}
+
+
+List<msgtype> getList (pid_t sender) {
+    if(!queue.has(sender)) {
+        queue.add(sender,new List<msgtype>)
+    } 
+
+    return queue.getList(sender);
+}
+
+msgtype snrecv(pid_t sender, int) {
+    List<msgtype> list;
+    if (sender == any) {
+        list = unkey;
+    }
+    else {
+        list = getList(sender);
+    }
+    
+
+    msgtype msg;
+
+    while ((msg = getMessage) == NULL) {
+        pid_t p, msgtype m = arecv(sender);
+        asend(p,ack);
+        unkey.add(m);
+        queue.add(p,m);
+    }    
+    
+    return msg;
+}
+
+
+
+
+
+Esercizio g.2
+
+
+- Si utilizza la paginazione perche' ci permette di fare un buon utilizzo della memoria principale tenendo le pagine in esecuzione in memoria principale
+  e quelle non utilizzate in memoria secondaria, ci permette anche lo scambio di pagine tra memoria secondaria e memoria principale attraverso la page fault
+
+
+- L'algoritmo del banchiere e' una tecnica di avoidance n di deadlock, viene eseguita ogni volta che vogliamo allocare delle risorse ad un processo, se il risultato e' safe possiamo allocare le risorse al processo
+  perche' siamo in grado di soddisfare le richieste di tutti gli altri processi, se lo stato non e' safe non siamo in deadlock, semplicemente posticipiamo la richiesta di allocazione in un momento
+  in quale saremo in uno stato safe.
+
+
+- File System FAT, sarebbe inefficiente perche' in questi sistemi si predilige l'accesso veloce ai dati, per cui utilizzare altri metodi, come allocazione concatenata o indicizzata, diminuirebbe la velocita' di accesso.
+
+- Ha reso i sistemi operativi piu' efficiente perche' ha dato ad esso un modo di 'intervenire' durante l'esecuzione di un processo, cosi' da poter gestire meglio le risorse del calcolatore.

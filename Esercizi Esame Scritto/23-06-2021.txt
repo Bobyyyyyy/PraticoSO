@@ -1,0 +1,74 @@
+Esercizio c.1
+
+
+
+monitor delayvalue {
+int NDELAY;
+condition ok2go;
+int numtoreturn;
+
+
+procedure entry int delay (int value) {
+    if (NDELAY > 0) {
+        NDELAY--;
+        ok2go.wait();
+    } 
+    else {
+        numtoreturn = value;
+        ok2go.signal();
+        ok2go.wait();
+    }
+
+    return numtoreturn;
+}
+
+}
+
+
+
+Esercizio c.2
+
+
+Semaphore mutex = new Semaphore(1);
+Queue<Semaphore s, int priority> ProcQueue;
+int value;
+
+
+void PLP (int prio) {
+    mutex.P();
+    if (value > 0) {
+        value--;
+        mutex.V();
+    }
+    else {
+        Semaphore s = new Semaphore(1);
+        Queue<s, prio> newProc;
+        ProcQueue.enqueue(newProc);
+        mutex.V();
+        newProc.P();
+    }
+}
+
+
+
+void PLV() {
+    mutex.P();
+    if (isEmpty(ProcQueue)) {
+        value++;
+    }
+    else {
+        Queue HighPrio = getMAXPRIO(ProcQueue); //ritorna la coda di quelli con priority maggiore;
+        if (HighPrio.lenght() > 1) {
+            Queue ElToRemove = GetLastElement(HighPrio); // prende l'elemento l'ultimo elemento in coda, ovvero l'ultimo inserito 
+            mutex.V();
+            ElToRemove.s.V();
+        }
+        else {
+            Queue ElToRemove = HighPrio.dequeue();
+            mutex.V();
+            ElToRemove.s.V();
+        }
+    }
+
+
+}

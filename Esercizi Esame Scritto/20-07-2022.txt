@@ -1,0 +1,86 @@
+// esercizio c.1
+navi[i] process: 
+    porto.attracca(capacità)
+    porto.salpa()
+
+
+camion[j] process:
+    while(1)
+        quantità = carica_cereali()
+        porto.scarica(quantità)
+
+monitor porto {
+
+int capacitaNaveAttraccata = 0;
+int quantitaCereali = 0; 
+bool naveAttraccata;
+int EccessoCamion = 0;  
+bool camionScarica;  
+condition ok2dock; /* naveAttraccata = false */
+condition ok2load; /* camionScarica = false */ 
+condition ok2sail; /* quantitaCereali = capacitaNaveAttraccata */
+
+
+
+
+procedure entry void attracca(capacità) {
+    if (naveAttraccata) {
+        ok2dock.wait();
+    }
+    naveAttraccata = true;
+    capacitaNaveAttraccata = capacità;
+    ok2sail.wait();
+}
+
+procedure entry void salpa() {
+    capacitaNaveAttraccata = 0;
+    naveAttraccata = false;
+    ok2dock.signal();
+}
+
+
+procedure entry int carica_cereali() {
+    if (camionScarica) {
+        ok2load.wait();
+    }
+    camionScarica = true;
+}
+
+procedure entry void scarica (quantità)  {
+    //eccessocamion sarà diverso da 0 solo se l'ultimo camion che ha riempito la barca ha scaricato solo parzialmente quindi 
+    quantitaCereali += EccessoCamion;
+    EccessoCamion = 0;
+
+    if ((quantitaCereali += quantità) > capacitaNaveAttraccata ) {
+        EccessoCamion = quantitaCereali += quantità - capacitaNaveAttraccata;
+    }
+    //salviamo l'eccesso del camion che rimarrà fino a che non verrà attraccata una nuova barca
+    quantitàCereali += quantità - EccessoCamion;  
+
+    //sicuramente vero se abbiamo dell'eccesso 
+    if(quantitaCereali == capacitaNaveAttraccata) {
+        ok2sail.signal();
+    }
+    ok2load.signal();
+}
+}
+
+
+// esercizio c.2
+
+
+void tsend (msg_t msg, pid_t dest) {
+    asend(msg,dest);
+}
+
+
+List MList = new List;
+msg_t trecv(void) {
+    while true 
+    msg = arecv(ANY);
+    if msg in MList: 
+        MList.delete(msg);
+        return msg
+    else 
+        MList.add(msg);
+}

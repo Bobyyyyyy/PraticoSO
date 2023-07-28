@@ -1,0 +1,76 @@
+Esercizio c.1
+
+
+monitor multibuf:
+
+T buffer[MAX]; // inizializzati a 0
+bool adding;
+bool getting;
+int requiredtoAdd;
+int requiredtoGet;
+condition ok2startadding;
+condition ok2startgetting;
+condition ok2get;
+condition ok2add;
+int index = 0;
+
+void add(int n, T objects[]) {
+
+    if(adding) {
+        ok2startadding.wait();
+    }
+
+    adding = true;
+    index = getLastIndex(buffer);   // restituisce l'indice del primo elemento vuoto (=0);
+
+    if( (MAX - index) < n ) {
+        requiredtoAdd = n - (MAX - index); // quanto mi serve per poter aggiungere
+        ok2add.wait();
+    }
+
+    for(i = 0 ; i < n ; i++ ) {
+        buffer[index] = objects[i];
+        index++;
+    }
+    
+    if ( n >= requiredtoGet) {
+        ok2get.signal();
+    }
+   
+    adding = false;
+    ok2startadding.signal(); 
+}
+
+
+
+void get(int n, T objects[]) {
+
+    if (getting) {
+        ok2startgetting.wait();
+    }
+
+
+    getting = true;
+    index = getLastIndex(buffer);
+
+    if (n > index) {
+        requiredtoGet = n - index;
+        ok2get.wait();
+    }
+
+    for(i = 0 ; i < n ; i++ ) {
+        objects[i] = buffer[i];
+        buffer[i] = 0;
+    }
+    
+    if (n >= requiredtoAdd) {
+        ok2add.signal();
+    }
+
+    getting = false;
+    ok2startgetting.signal();
+
+}
+
+
+- Un caso di deadlock potrebbe essere quando due processi che fanno get e add si bloccano con ok2get o ok2add, c'e' attesa circolare e altri processi non possono entrare siccome c'e' richiesta bloccante.

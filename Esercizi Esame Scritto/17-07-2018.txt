@@ -1,0 +1,107 @@
+Esercizio c.2
+
+Semaphore mutex = new BinarySemaphore(1);
+int counter;
+Queue<Semaphore> queue;
+
+process Producer[i] {
+    while (true)
+    value = produce();
+    mutex.P();
+    lifobuf.push(value);
+    counter++;
+    if(!queue.empty()) {
+        BinarySemaphore s = queue.dequeue();
+        s.V(); 
+    }
+    mutex.V();
+}
+
+
+
+process Consumer[i] {
+    while true() 
+    object val;
+    mutex.P();
+    if(counter == 0) {
+        Semaphore s = new BinarySemaphore(0);
+        queue.enqueue(s);
+        s.P();
+        mutex.V();
+
+    }
+    else {
+        value = lifobuf.pop();
+        counter--;
+        mutex.V();
+        process(value);
+}
+}
+
+
+Esercizio c.1
+
+
+monitor Delirium {
+List<string type, int quantity> beerList;
+Queue<string type, int Remaining,condition c> Orders;
+Condition ok2pour; // cap == 0, c'e' gia' un barista che sta attendendo il rifornimento di quel tipo di birra
+
+
+procedure entry pour (type,quantity) {
+    int cap = getRemaining(type);
+    if(cap == 0) {
+        ok2pour.wait();
+    }
+    if (quantity > cap) {
+        setCapacity(type,0); //mette a 0 la quantita' del tipo di birra type nella beerList
+        condition s;
+        PendingOrder = new Queue<type,(quantity-cap),s>
+        Orders.enqueue(PendingOrder);
+        PendingOrder.s.wait();
+    }
+    setCapacity(type,(cap-quantity));
+    ok2pour.signal();
+
+}
+
+
+
+procedure entry string isempty() {
+        string typetoLoad = getType(); // prende il tipo di birra dell'ordine in attesa in testa, restituisce 0 se la lista e' vuota ma non dovrebbe siccome il magazziniere viene attivato solo quando almeno un tipo di birra e' vuoto.
+
+
+
+procedure entry loaded(type,capacity) {
+    addCapacity(type,capacity);
+    NewOrder = Orders.getOrder(type); //toglie dalla coda l'ordine di quel tipo di birra
+    setCapacity(type,(capacity-Orders.Remaining)); 
+    Orders.Remaining = 0;
+    Orders.c.signal();
+}
+}
+}
+
+Esercizio g.1
+
+
+Sistema biprocessore in cui le unita' I/O sono effettuate su una sola unita', utilizza uno scheduler round-robin con time-slice di 3ms siccome possiamo vedere che il massimo tempo che un processo e' in CPU e' 3ms
+
+A -> 5 ms CPU -> I/O 4 ms -> 2 ms CPU
+B -> 2 ms CPU -> I/O 4 ms -> 2 ms CPU
+C -> 3 ms CPU -> I/O 3 ms -> 3 ms CPU
+D -> 11 ms CPU -> I/O 1 ms -> 1 ms CPU
+
+
+
+Esercizio g.2
+
+
+- La memoria virtuale non e' consigliabile da utilizzare quando abbiamo molta memoria RAM, evitando cosi' cali di prestazione dati al fatto che l'accesso alla memoria secondaria e' piu' lento.
+
+- Il sistema FAT viene ancora utilizzato perche' ci permette di utilizzare i blocchi di memoria solamente per i dati salvando la FAT in memoria secondaria, con la possibilita' di renderla piu' efficiente con meccanismi di caching
+
+- La metodologia RAID e' utilizzata per rendere piu' efficiente l'utilizzo dei dischi utilizzando il parallelismo per aumentare la velocita' attraverso l'utilizzo di un array di dischi indipendenti che sono visti come un solo disco.
+  Si sarebbe necessario perche' RAID ci protegge da danni fisici riguardanti i dischi, se un utente maligno decide di modificare i dati, RAID non puo' farci nulla.
+
+- Dati 3 processi e 2 classi di risorse, se 2 processi si trovano in una situazione nella quale si crea un ciclo, se almeno una delle due classi di risorse ha piu' risorse disponibili, essa puo' essere assegnata al terzo processo che la richiede.

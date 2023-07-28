@@ -1,0 +1,43 @@
+// esercizio c.1
+
+monitor bitcond {
+int statoattuale = 0; 1111 
+
+
+procedure entry void set(int bit2set);
+
+procedure entry void unset(int bit2unset);
+
+procedure entry void statuswait(int bit2wait);
+}
+
+
+// esercizio c.2
+
+int somma = 0;
+int numP = 0;
+Queue<Semaphore> coda = new Queue<Semaphore>;
+Semaphore mutex = new Semaphore(1);
+
+
+void sumstop(int v) {
+    mutex.P();
+    Semaphore s = new Semaphore(0);
+    somma += v;
+    coda.enqueue(s);
+    mutex.V();
+    s.P();
+}
+
+
+int sumgo (void) {
+    mutex.P();
+    
+    while(!coda.isEmpty) {
+        Semaphore s = coda.dequeue();
+        s.v();
+    }
+
+    mutex.V();
+    return somma;
+}

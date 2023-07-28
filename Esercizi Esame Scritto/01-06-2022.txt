@@ -1,0 +1,83 @@
+Esercizio c.1
+
+
+
+monitor delay {
+Queue<condition c, int nt> procQueue;
+int procBloccati = 0;
+
+
+procedure entry int wait_tick(int nticks) {
+    if (nticks != 0) { // se chiamiamo la wait_tick con 0 ritorna semplicemente il numero di processi bloccati siccome non deve aspettare nessun tick
+        condition s;    
+        newProc = new Queue<condition s, int nticks>
+        procQueue.enqueue(newProc);
+        procBloccati++;
+        newProc.s.wait();
+    }
+    return procBloccati;
+}
+
+
+
+
+procedure entry void tick(void) {
+    int processiSbloccati = 0;  //tiene conto dei processi che vengono sbloccati in una tick, siccome se sblocchiamo due processi in una sola tick vogliamo che restituiscano
+                                 lo stesso numero di processi teniamo conto dei processiSbloccati solo alla fine della tick.
+    if (!isEmpty(procQueue)) {
+        for processes in procQueue:
+            processes.nt--;
+            if(processes.nt == 0) {
+                processiSbloccati++;
+                p = procQueue.dequeue();
+                p.c.signal();
+            }
+    procBloccati -= processiSbloccati;
+}
+}
+}
+
+
+
+Esercizio g.1
+
+
+    credit assigned need
+p1 (4,2,4) (2,0,0) (2,2,4)
+p2 (4,4,2) (0,2,0) (4,2,2)
+p3 (2,4,4) (0,0,4) (2,4,0) 
+
+
+Sequenze possibili 3! = 6
+
+p1,p2,p3 (2,2,4) -> p1 -> (4,2,4) -> p2 -> (4,4,4) -> p3 -> (4,4,8) --> SAFE se COH>=(2,2,4);
+
+p1,p3,p2 (2,2,4) -> p1 -> (4,2,4) -> p3 ha bisogno di 2 unità in piu' della seconda 
+p1,p3,p2 (2,4,4) -> p1 -> (4,4,4) -> p3 -> (4,4,8) -> p2 -> (4,6,8) --> SAFE se COH >= (2,4,4); (SOTTOCASO DI SOPRA)
+
+p2,p3,p1 (4,2,2) -> p2 -> (4,4,2) -> p3 -> (4,4,6) -> p1 -> (6,4,6) --> SAFE se COH >= (4,2,2);
+
+p2,p1,p3 (4,2,2) -> p2 -> (4,4,2) -> p1 -> ha bisogno gi 2 unità in piu di p3
+p2,p1,p3 (4,2,4) -> p2 -> (4,4,4) -> p1 -> (6,4,4) -> p3 -> (6,4,8) --> SAFE se COH >= (4,2,4); (SOTTOCASO DI SOPRA)
+
+p3,p1,p2 (2,4,0) -> p3 -> (2,4,4) -> p1 -> (4,4,4) -> p2 -> (4,6,4) --> SAFE se COH >= (2,4,0);
+
+p3,p2,p1 (2,4,0) -> p3 -> (2,4,4) -> p2 -> ha bisogno di 2 unità in piu' di p1
+p3,p2,p1 (4,4,0) -> p3 -> (4,4,4) -> p2 -> (4,6,4) -> p1 -> (6,6,4) -> SAFE se COH >= (4,4,0); (SOTTOCASO DI SOPRA) 
+
+
+
+
+Esercizio g.2
+
+
+- Perchè viene usata la paginazione per implementare la memoria virtuale?
+    Viene utilizzata la paginazione perchè ci permette l'allocazione di memoria con blocchi di dimensione fissa, inoltre ci permette di avere le pagine in memoria secondaria, e spostarle in memoria principale
+    solo quando esse servono, ovvero quando avviene una page fault;
+
+- 
+    ?
+
+- Perchè il file system FAT è piu' efficiente di un file system che utilizzi l'allocazione concatenata coi puntatori nei blocchi dati?
+    Il file system FAT è piu' efficiente quando si tratta di accesso diretto a file grandi, siccome nell'allocazione concatenata coi puntatori nei blocchi dati dovremmo scorrere tutta la lista
+    Nel sistema FAT i blocchi sono utilizzati solo per i dati,

@@ -1,0 +1,76 @@
+Esercizio c.1 
+
+
+monitor storage:
+int magazzino[16]; // tutti gli elementi inizializzati a 0 
+condition need2wait;
+Queue workerQueue <condition canbuild, int required[16];
+
+
+
+procedure entry void add(components) {
+    for(int i = 0;i<16;i++ ) {
+        magazzino[i] += components[i];
+    }
+
+    for workers in workerQueue:  //se non ce ne sono non fa nulla
+        for(int i = 0; i<16; i++) {
+            if (workers.required[i] != 0) {  //ha bisogno dell'i-esima componente 
+                if (magazzino[i] >= workers.required[i]) { // ce ne abbastanza in magazzino 
+                    magazzino[i] -=  workers.required[i]; // la togliamo dal magazzino
+                    workers.required[i] = 0;
+                } 
+            }
+        }
+
+        if(isAllZero(workers.required)) { //controlla se c'è almeno un elemento diverso da zero
+            workers.canbuild.signal();
+            }
+        else {
+            break;  //se il primo worker della coda è stato soddisfatto andiamo avanti nella coda per vedere se anche il secondo è soddisfatto e cosi' via, se invece non è soddisfatto non possiamo andare avanti perchè è FIFO
+        }
+}
+
+
+procedure entry void get(components) {
+
+
+    if (!isEmpty(workerQueue)) {
+        need2wait.wait();
+    }
+
+    condition c;
+    int r[16];  //inizializzato a 0 
+    Worker = new workerQueue <c,r>;
+
+    for(int i = 0; i<16; i++ ) {
+        if (components[i] > magazzino[i]) {
+            Worker.r[i] = components[i] - magazzino[i];
+            magazzino[i] = 0;
+        }
+        else {
+            magazzino[i] = magazzino[i] - components[i]; 
+        }
+    }
+
+    if (!isAllZero(Worker.r)) { 
+        workerQueue.enqueue(Worker);
+        Worker.c.wait();
+        workerQueue.dequeue(Worker);
+        if (isEmpty(workerQueue)) {
+            need2wait.signal();
+        }
+    }
+}       
+
+
+
+
+Esercizio g.1
+
+
+Processo A -> 3ms ci calcolo -> ogni 6ms
+Processo B -> 4ms di calcolo -> ogni 8ms
+
+
+

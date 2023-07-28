@@ -1,0 +1,89 @@
+monitor torneo {
+
+List<int turno, string opp1, string opp2, int forma1, int forma2 int match, condition c> MatchList[N];
+
+// Nella lista del primo turno troviamo tutte le squadre pronte per sfidarsi al turno 1, per gli altri turni è tutto inizializzato a 0;
+// Match è un intero che cresce partendo da 1 fino ad arrivare al numero di match in un turno;
+
+
+procedure entry int gioca (string i, int turno , int forma ) {
+    
+    if (turno != 0) {
+
+        int oldMatchNumber = List[turno-1].getMatchNumber(i); 
+
+        if ( oldMatchNumber % 2 == 0 ) {                              // se il numero è divisibile per 2 possiamo trovare subito il numero del match del turno successivo in cui assegnare la squadra
+            int newMatchNumber = oldMatchNumber/2;
+            if (MatchList[turno].getMatch(newMatchNumber) == NULL ) { // Restituisce NULL se i campi sono tutti a 0
+                condition c;
+                MatchList[turno].add[turno,newMatchNumber,c];
+                MatchList[turno].addOpp1[newMatchNumber,i,forma];    // Riempio i campi della prima squadra opp1 e forma1
+                c.wait(); // blocca il processo finchè non arriva lo sfidante
+            } 
+            else  // la squadra sfidante è entrata nel monitor prima della squadra attuale
+            {
+                MatchList[turno].addOpp2[newMatchNumber,i,forma]     // Riempo i campi per della seconda squadra opp2 e forma2
+                condition c = MatchList[turno].getCond(newMatchNumber);
+                c.signal();   //sblocco la squadra
+            }
+        }
+
+        else {                                                       // il match trovato è un numero non divisibile per 2, allora per trovare il match del turno successivo in cui allocare la squadra ci basta guardare il numero del match successivo del turno precedente / 2
+                newMatchNumber = (oldMatchNumber+1)/2;
+            if (MatchList[turno].getMatch(newMatchNumber) == NULL ) {   // Restituisce NULL se i campi sono tutti a 0
+                condition c;
+                MatchList[turno].add[turno,newMatchNumber,c];
+                MatchList[turno].addOpp1[newMatchNumber,i,forma];   // Riempio i campi della prima squadra opp1 e forma1
+                c.wait(); // blocca il processo finchè non arriva lo sfidante
+            } 
+            else  // la squadra sfidante è entrata nel monitor prima della squadra attuale
+            {
+                MatchList[turno].addOpp2[newMatchNumber,i,sforma]    // Riempo i campi per della seconda squadra opp2 e forma2
+                condition c = MatchList[turno].getCond(newMatchNumber);
+                c.signal();   //sblocco la squadra
+            }
+        }
+        }
+
+
+        string Winner;
+
+        Winner = MatchList[turno].play(newMatchNumber); 
+
+        if(Winner == i) { return true; }
+        else {return false; }
+
+    }
+
+
+
+}
+
+
+// Si assume che una squadra perdente non provi a rientrare nel monitor
+
+string play (int match) {
+
+    Match = MatchList,getMatch(match);
+
+    if(Match.forma1 > Match.forma2) {
+        return Match.opp1;
+    }
+    elif (Match.forma2 > Match.forma1) {
+        return Match.opp2;
+    }    
+
+
+    // caso forma uguale
+
+    int n = rand%2;
+
+    if (n == 1) {
+        return Match.opp1;
+    }
+
+    else {
+        return Match.opp1;
+    }
+    
+}
